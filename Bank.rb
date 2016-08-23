@@ -1,14 +1,15 @@
 module Bank
 	class Account
-		attr_accessor :ID, :balance
+		attr_accessor :ID, :balance, :owner
 		
-		def initialize(ID, balance=0)
+		def initialize(ID, balance=0, owner=nil)
 			if balance < 0
 				raise ArgumentError.new
 			end
 
 			@ID = ID
 			@balance = balance
+			@owner = owner
 		end
 
 		def withdraw(amount)
@@ -23,6 +24,14 @@ module Bank
 		def deposit(amount)
 			@balance+=amount
 			return @balance
+		end
+	end
+
+	class Owner
+		attr_accessor :name, :address
+		def initialize(name, address)
+			@name = name
+			@address = address
 		end
 	end
 end
