@@ -11,5 +11,10 @@ module Bank
 			@balance-=amount
 			return @balance
 		end
+
+		def deposit(amount)
+			@balance+=amount
+			return @balance
+		end
 	end
 end
