@@ -35,8 +35,3 @@ module Bank
 		end
 	end
 end
-
-acct = Bank::Account.new(13, 1400)
-puts acct.withdraw(500)
-puts acct.withdraw(100000)
-puts acct.deposit(5000)
