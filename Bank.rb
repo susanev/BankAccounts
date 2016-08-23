@@ -6,13 +6,17 @@ module Bank
 			if balance < 0
 				raise ArgumentError.new
 			end
-			
+
 			@ID = ID
 			@balance = balance
 		end
 
 		def withdraw(amount)
-			@balance-=amount
+			if(@balance - amount < 0)
+				puts "WARNING: You cannot withdraw more than you have"
+			else
+				@balance-=amount
+			end
 			return @balance
 		end
 
