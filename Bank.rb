@@ -6,5 +6,10 @@ module Bank
 			@ID = ID
 			@balance = balance
 		end
+
+		def withdraw(amount)
+			@balance-=amount
+			return @balance
+		end
 	end
 end
