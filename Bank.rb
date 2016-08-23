@@ -1,13 +1,13 @@
 module Bank
 	class Account
-		attr_accessor :ID, :balance, :owner
+		attr_accessor :id, :balance, :owner
 		
-		def initialize(ID, balance=0, owner=nil)
+		def initialize(id, balance=0, owner=nil)
 			if balance < 0
 				raise ArgumentError.new
 			end
 
-			@ID = ID
+			@id = id
 			@balance = balance
 			@owner = owner
 		end
@@ -35,3 +35,8 @@ module Bank
 		end
 	end
 end
+
+acct = Bank::Account.new(13, 1400)
+puts acct.withdraw(500)
+puts acct.withdraw(100000)
+puts acct.deposit(5000)
