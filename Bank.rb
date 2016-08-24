@@ -81,10 +81,10 @@ module Bank
 			return Bank::Owner.new(line[0], line[1], line[2], line[3], line[4], line[5])
 		end
 
-		def accounts(owner, file)
+		def accounts(file)
 			accounts = []
-			CSV.open("support/account_owners.csv", "r").each do |line|
-				if line[1] == owner.id
+			CSV.open(file, "r").each do |line|
+				if line[1] ==id
 					accounts.push(Bank::Account.new(line[0]))
 				end
 			end
