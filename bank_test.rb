@@ -14,7 +14,7 @@ class BankTest < Minitest::Test
 	end
 
 	def test_account_owner
-		owner = Bank::Owner.new("1", "susan", "ev", "123street", "seattle", "wa")
+		owner = Bank::Owner.new("1", "ev", "susan", "123street", "seattle", "wa")
 		acct = Bank::Account.new(13, 1400, owner)
 
 		assert_equal acct.id, 13
@@ -61,6 +61,12 @@ class BankTest < Minitest::Test
 	def test_owner_csv_find
 		assert_equal Bank::Owner.find(21).name, "Jessica Bell"
 		assert_equal Bank::Owner.find(200), nil
+	end
+
+	def test_owner_accounts
+		owner = Bank::Owner.new("25", "ev", "susan", "123street", "seattle", "wa")
+		assert_equal owner.accounts("support/account_owners.csv").length, 1
+		assert_equal owner.accounts("support/account_owners.csv")[0].balance, 0
 	end
 
 end
