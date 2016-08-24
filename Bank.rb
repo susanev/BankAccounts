@@ -45,7 +45,7 @@ module Bank
 			return nil
 		end
 
-		def create_account(line)
+		def self.create_account(line)
 			return Bank::Account.new(line[0].to_i, line[1].to_i)
 		end
 	end
@@ -77,7 +77,7 @@ module Bank
 			return nil
 		end
 
-		def create_owner(line, id, l_name, f_name, street_address, city, state)
+		def self.create_owner(line, id, l_name, f_name, street_address, city, state)
 			return Bank::Owner.new(line[0], line[1], line[2], line[3], line[4], line[5])
 		end
 
