@@ -38,4 +38,14 @@ class BankTest < Minitest::Test
 		acct.deposit(5000)
 		assert_equal acct.balance, 6400
 	end
+
+	def test_csv_all
+		assert_equal Bank::Account.all.length, 12
+		assert_equal Bank::Account.all[2].id, 1214
+		assert_equal Bank::Account.all[6].balance, 9844567
+	end
+
+	def test_csv_find
+		assert_equal Bank::Account.find(15156).balance, 4356772
+	end
 end
