@@ -31,28 +31,70 @@ module Bank
 		def self.all
 			accounts = []
 			CSV.open("support/accounts.csv", "r").each do |line|
-				accounts.push(Bank::Account.new(line[0].to_i, line[1].to_i))
+				accounts.push(create_account(line))
 			end
 			return accounts
 		end
 
 		def self.find(id)
-			acct = nil
 			CSV.open("support/accounts.csv", "r").each do |line|
 				if line[0].to_i == id
-					acct = Bank::Account.new(line[0].to_i, line[1].to_i)
-					return acct
+					return create_account(line)
 				end
 			end
-			return acct
+			return nil
+		end
+
+		def create_account(line)
+			return Bank::Account.new(line[0].to_i, line[1].to_i)
 		end
 	end
 
 	class Owner
-		attr_accessor :name, :address
-		def initialize(name, address)
-			@name = name
-			@address = address
+		attr_accessor :id, :name, :address, :accounts
+		
+		def initialize(id, l_name, f_name, street_address, city, state)
+			@id = id
+			@name = "#{f_name} #{l_name}"
+			@address = "#{street_address} \n #{city}, #{state}"
+			@accounts = nil
+		end
+
+		def self.all
+			owners = []
+			CSV.open("support/owners.csv", "r").each do |line|
+				owners.push(create_owner(line))
+			end
+			return owners
+		end
+
+		def self.find(id)
+			CSV.open("support/owners.csv", "r").each do |line|
+				if line[0].to_i == id
+					return create_owner(line)
+				end
+			end
+			return nil
+		end
+
+		def create_owner(line, id, l_name, f_name, street_address, city, state)
+			return Bank::Owner.new(line[0], line[1], line[2], line[3], line[4], line[5]
+		end
+
+		def accounts(owner, file)
+			accounts = []
+			CSV.open("support/account_owners.csv", "r").each do |line|
+				if line[1] == owner.id
+					accounts.push(Bank::Account.new(line[0]))
+				end
+			end
+			return accounts
 		end
 	end
 end
+
+
+
+
+
+
