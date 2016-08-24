@@ -59,6 +59,8 @@ class BankTest < Minitest::Test
 	end
 
 	def test_owner_csv_find
+		assert_equal Bank::Owner.find(21).name, "Jessica Bell"
+		assert_equal Bank::Owner.find(200), nil
 	end
 
 end
