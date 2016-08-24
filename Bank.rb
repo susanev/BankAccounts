@@ -56,7 +56,7 @@ module Bank
 		def initialize(id, l_name, f_name, street_address, city, state)
 			@id = id
 			@name = "#{f_name} #{l_name}"
-			@address = "#{street_address} \n #{city}, #{state}"
+			@address = "#{street_address}\n#{city}, #{state}"
 			@accounts = nil
 		end
 
