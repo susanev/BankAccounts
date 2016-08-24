@@ -1,3 +1,5 @@
+require 'csv'
+
 module Bank
 	class Account
 		attr_accessor :id, :balance, :owner
@@ -24,6 +26,25 @@ module Bank
 		def deposit(amount)
 			@balance+=amount
 			return @balance
+		end
+
+		def self.all
+			accounts = []
+			CSV.open("support/accounts.csv", "r").each do |line|
+				accounts.push(Bank::Account.new(line[0].to_i, line[1].to_i))
+			end
+			return accounts
+		end
+
+		def self.find(id)
+			acct = nil
+			CSV.open("support/accounts.csv", "r").each do |line|
+				if line[0].to_i == id
+					acct = Bank::Account.new(line[0].to_i, line[1].to_i)
+					return acct
+				end
+			end
+			return acct
 		end
 	end
 
