@@ -78,7 +78,7 @@ module Bank
 		end
 
 		def create_owner(line, id, l_name, f_name, street_address, city, state)
-			return Bank::Owner.new(line[0], line[1], line[2], line[3], line[4], line[5]
+			return Bank::Owner.new(line[0], line[1], line[2], line[3], line[4], line[5])
 		end
 
 		def accounts(owner, file)
