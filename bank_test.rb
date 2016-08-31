@@ -91,7 +91,7 @@ class BankTest < Minitest::Test
 
 	def test_checking_account
 		checking_acct = Bank::CheckingAccount.new(1)
-		assert_equal 3, checking_acct.free_checks
+		assert_equal 0, checking_acct.checks_used
 
 		assert_equal 0, checking_acct.withdraw(50)
 
@@ -104,12 +104,12 @@ class BankTest < Minitest::Test
 		assert_equal 98, checking_acct.deposit(100)
 		assert_equal 93, checking_acct.withdraw_using_check(5)
 		assert_equal 90, checking_acct.withdraw_using_check(3)
-		assert_equal 0, checking_acct.free_checks
+		assert_equal 3, checking_acct.checks_used
 		assert_equal 83, checking_acct.withdraw_using_check(5)
 
 		checking_acct.reset_checks
 
-		assert_equal 3, checking_acct.free_checks
+		assert_equal 0, checking_acct.checks_used
 
 	end
 end
