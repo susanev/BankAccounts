@@ -126,9 +126,11 @@ module Bank
 		end
 
 		def withdraw(amount)
-			if super.withdraw(amount+1) != amount
+			prev_balance = @balance
+			if prev_balance != super(amount+1)
 				puts "A $1 withdraw charge is deducted from your account"
 			end
+			return @balance
 		end
 
 		def withdraw_using_check(amount)
