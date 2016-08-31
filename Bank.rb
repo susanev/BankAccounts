@@ -105,13 +105,13 @@ module Bank
 				puts "WARNING: Your balance can not fall below $10"
 			else
 				puts "A $2 withdraw charge has been deducted from your account"
-				@balance-=amount
+				@balance-=(amount+2)
 			end
 			return @balance
 		end
 
 		def add_interest(rate)
-			interest = @blanace * rate/100
+			interest = @balance * rate/100
 			@balance+=interest
 			return interest
 		end
