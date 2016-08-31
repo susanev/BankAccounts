@@ -116,6 +116,40 @@ module Bank
 			return interest
 		end
 	end
+
+	class CheckingAccount < Account
+		attr_accessor :free_checks
+
+		def initialize (id, balance=0, owner=nil)
+			super(id, balance, owner)
+			@free_checks = 3
+		end
+
+		def withdraw(amount)
+			if super.withdraw(amount+1) != amount
+				puts "A $1 withdraw charge is deducted from your account"
+			end
+		end
+
+		def withdraw_using_check(amount)
+			@free_checks > 0 ? fee=0 : fee=2
+
+			if(@balance - (amount+fee) < -10)
+				puts "WARNING: Your balance can not fall below -$10"
+			else
+				@free_checks-=1
+				if fee > 0
+					puts "A $2 withdraw charge has been deducted from your account"
+				end
+				@balance-=(amount+fee)
+			end
+			return @balance
+		end
+
+		def reset_checks
+			@free_checks = 3
+		end
+	end
 end
 
 
