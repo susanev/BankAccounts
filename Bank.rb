@@ -28,6 +28,12 @@ module Bank
 			return @balance
 		end
 
+		def add_interest(rate)
+			interest = @balance * rate/100
+			@balance+=interest
+			return interest
+		end
+
 		def self.all
 			accounts = []
 			CSV.open("support/accounts.csv", "r").each do |line|
@@ -109,12 +115,6 @@ module Bank
 			end
 			return @balance
 		end
-
-		def add_interest(rate)
-			interest = @balance * rate/100
-			@balance+=interest
-			return interest
-		end
 	end
 
 	class CheckingAccount < Account
@@ -150,6 +150,56 @@ module Bank
 
 		def reset_checks
 			@free_checks = 3
+		end
+	end
+
+	class MoneyMarketAccount < Account
+		attr_accessor :transactions, :transactions_allowed
+
+		def initialize(id, balance=0, owner=nil)
+			if balance < 10000
+				raise ArgumentError.new
+			end
+
+			super(id, balance, owner)
+
+			@transactions = 0
+			@transactions_allowed = true
+		end
+
+		def withdraw(amount)
+			if @balance - amount < 10000 && @balance - amount >= 0
+				puts "Fee of $100 applied for going below 10,000"
+				@transactions_allowed = false
+				@transactions+=1
+				return super(amount+100)
+			else
+				prev_balance = @balance
+				new_balance = super(amount)
+				if prev_balance != new_balance
+					@transactions+=1
+				end
+				return new_balance
+			end
+		end
+
+		def deposit(amount)
+			if @transactions_allowed || @balance + amount >= 10000
+				super(amount)
+
+				if !@transactions_allowed
+					transactions_allowed = true
+				else
+					@transactions+=1
+				end
+			else
+				puts "No transactions allowed until you deposit enough to reach or exceed 10000"
+				return @balance
+			end
+		end
+
+		def reset_transactions
+			@transactions = 0
 		end
 	end
 end
