@@ -171,20 +171,20 @@ module Bank
 			if !@transactions_allowed
 				puts "No transactions allowed until you deposit enough to reach or exceed 10000"
 				return @balance
-			end
-
-			if @balance - amount < 10000 && @balance - amount >= 0
-				puts "Fee of $100 applied for going below 10,000"
-				@transactions_allowed = false
-				@transactions+=1
-				return super(amount+100)
 			else
-				prev_balance = @balance
-				new_balance = super(amount)
-				if prev_balance != new_balance
+				if @balance - amount < 10000 && @balance - amount >= 0
+					puts "Fee of $100 applied for going below 10,000"
+					@transactions_allowed = false
 					@transactions+=1
+					return super(amount+100)
+				else
+					prev_balance = @balance
+					new_balance = super(amount)
+					if prev_balance != new_balance
+						@transactions+=1
+					end
+					return new_balance
 				end
-				return new_balance
 			end
 		end
 
