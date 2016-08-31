@@ -118,11 +118,11 @@ module Bank
 	end
 
 	class CheckingAccount < Account
-		attr_accessor :free_checks
+		attr_accessor :checks_used
 
 		def initialize (id, balance=0, owner=nil)
 			super(id, balance, owner)
-			@free_checks = 3
+			@checks_used = 0
 		end
 
 		def withdraw(amount)
@@ -134,12 +134,12 @@ module Bank
 		end
 
 		def withdraw_using_check(amount)
-			@free_checks > 0 ? fee=0 : fee=2
+			@checks_used < 3 ? fee=0 : fee=2
 
 			if(@balance - (amount+fee) < -10)
 				puts "WARNING: Your balance can not fall below -$10"
 			else
-				@free_checks-=1
+				@checks_used+=1
 				if fee > 0
 					puts "A $2 withdraw charge has been deducted from your account"
 				end
@@ -149,7 +149,7 @@ module Bank
 		end
 
 		def reset_checks
-			@free_checks = 3
+			@checks_used = 0
 		end
 	end
 
