@@ -110,7 +110,46 @@ class BankTest < Minitest::Test
 		checking_acct.reset_checks
 
 		assert_equal 0, checking_acct.checks_used
+	end
 
+	def test_money_market_account
+		assert_equal ArgumentError, Bank::MoneyMarketAccount.new(1, 0) rescue ArgumentError
+
+		money_market = Bank::MoneyMarketAccount.new(1, 15000)
+
+		assert_equal 20000, money_market.deposit(5000)
+		assert_equal 1, money_market.transactions
+
+		assert_equal 15000, money_market.withdraw(5000)
+		assert_equal 2, money_market.transactions
+		assert_equal true, money_market.transactions_allowed
+
+		assert_equal 8900, money_market.withdraw(6000)
+		assert_equal 3, money_market.transactions
+		assert_equal false, money_market.transactions_allowed
+
+		assert_equal 8900, money_market.withdraw(100)
+		assert_equal 8900, money_market.deposit(100)
+
+		assert_equal 10900, money_market.deposit(2000)
+		assert_equal true, money_market.transactions_allowed
+		assert_equal 3, money_market.transactions
+
+		assert_equal 11000, money_market.deposit(100)
+		assert_equal 11100, money_market.deposit(100)
+		assert_equal 11200, money_market.deposit(100)
+		assert_equal 6, money_market.transactions
+
+		assert_equal 11200, money_market.deposit(100)
+		assert_equal 11200, money_market.withdraw(100)
+		assert_equal 6, money_market.transactions
+
+		money_market.reset_transactions
+		assert_equal 0, money_market.transactions
+
+		assert_equal 11300, money_market.deposit(100)
+		assert_equal 11200, money_market.withdraw(100)
+		assert_equal 2, money_market.transactions
 	end
 end
 
