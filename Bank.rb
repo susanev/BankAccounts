@@ -171,6 +171,9 @@ module Bank
 			if !@transactions_allowed
 				puts "No transactions allowed until you deposit enough to reach or exceed 10000"
 				return @balance
+			elsif @transactions == 6
+				puts "No more transactions allowed this month"
+				return @balance
 			else
 				if @balance - amount < 10000 && @balance - amount >= 0
 					puts "Fee of $100 applied for going below 10,000"
@@ -189,7 +192,10 @@ module Bank
 		end
 
 		def deposit(amount)
-			if @transactions_allowed || @balance + amount >= 10000
+			if @transactions == 6
+				puts "No more transactions allowed this month"
+				return @balance
+			elsif @transactions_allowed || @balance + amount >= 10000
 				super(amount)
 
 				if !@transactions_allowed
