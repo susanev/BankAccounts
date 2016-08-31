@@ -85,11 +85,33 @@ class BankTest < Minitest::Test
 		savings_acct.withdraw(50)
 		assert_equal 58, savings_acct.balance
 
-		assert_equal savings_acct.add_interest(0.25), 0.145
+		assert_equal 0.145, savings_acct.add_interest(0.25)
 		assert_equal 58.145, savings_acct.balance
-
 	end
 
+	def test_checking_account
+		checking_acct = Bank::CheckingAccount.new(1)
+		assert_equal 3, checking_acct.free_checks
+
+		assert_equal 0, checking_acct.withdraw(50)
+
+		checking_acct.deposit(100)
+		assert_equal 100, checking_acct.balance
+
+		assert_equal 98, checking_acct.withdraw(1)
+
+		assert_equal -2, checking_acct.withdraw_using_check(100)
+		assert_equal 98, checking_acct.deposit(100)
+		assert_equal 93, checking_acct.withdraw_using_check(5)
+		assert_equal 90, checking_acct.withdraw_using_check(3)
+		assert_equal 0, checking_acct.free_checks
+		assert_equal 83, checking_acct.withdraw_using_check(5)
+
+		checking_acct.reset_checks
+
+		assert_equal 3, checking_acct.free_checks
+
+	end
 end
 
 
