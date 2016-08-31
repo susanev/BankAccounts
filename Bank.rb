@@ -193,7 +193,7 @@ module Bank
 				super(amount)
 
 				if !@transactions_allowed
-					transactions_allowed = true
+					@transactions_allowed = true
 				else
 					@transactions+=1
 				end
