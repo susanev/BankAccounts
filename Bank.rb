@@ -91,6 +91,31 @@ module Bank
 			return accounts
 		end
 	end
+
+	class SavingsAccount < Account
+		def initialize (id, balance=0, owner=nil)
+			if balance < 10
+				raise ArgumentError.new
+			end
+			super(id, balance, owner)
+		end
+
+		def withdraw(amount)
+			if(@balance - (amount+2) < 10)
+				puts "WARNING: Your balance can not fall below $10"
+			else
+				puts "A $2 withdraw charge has been deducted from your account"
+				@balance-=amount
+			end
+			return @balance
+		end
+
+		def add_interest(rate)
+			interest = @blanace * rate/100
+			@balance+=interest
+			return interest
+		end
+	end
 end
 
 
