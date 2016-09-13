@@ -4,46 +4,50 @@ require 'minitest/pride'
 require_relative 'Bank'
 
 class BankTest < Minitest::Test
+	def setup
+		@acct1 = Bank::Account.new(13, 1400)
+		
+		@owner = Bank::Owner.new("1", "ev", "susan", "123street", "seattle", "wa")
+		@acct2 = Bank::Account.new(13, 1400, @owner)
+		
+		@accounts = Bank::Account.all
+		
+		@owners = Bank::Owner.all
+
+		@checking_acct = Bank::CheckingAccount.new(1)
+
+		@money_market = Bank::MoneyMarketAccount.new(1, 15000)
+	end
 
 	def test_account_no_owner
-		acct = Bank::Account.new(13, 1400)
-
-		assert_equal 13, acct.id
-		assert_equal 1400, acct.balance
-		assert_equal nil, acct.owner
+		assert_equal 13, @acct1.id
+		assert_equal 1400, @acct1.balance
+		assert_equal nil, @acct1.owner
 	end
 
 	def test_account_owner
-		owner = Bank::Owner.new("1", "ev", "susan", "123street", "seattle", "wa")
-		acct = Bank::Account.new(13, 1400, owner)
-
-		assert_equal 13, acct.id
-		assert_equal 1400, acct.balance
-		assert_equal owner, acct.owner
+		assert_equal 13, @acct2.id
+		assert_equal 1400, @acct2.balance
+		assert_equal @owner, @acct2.owner
 	end
 
-	def test_withdraw
-		acct = Bank::Account.new(13, 1400)
-		
-		acct.withdraw(500)
-		assert_equal 900, acct.balance
+	def test_withdraw		
+		@acct1.withdraw(500)
+		assert_equal 900, @acct1.balance
 
-		acct.withdraw(100000)
-		assert_equal 900, acct.balance
+		@acct1.withdraw(100000)
+		assert_equal 900, @acct1.balance
 	end
 
 	def test_deposit
-		acct = Bank::Account.new(13, 1400)
-
-		acct.deposit(5000)
-		assert_equal 6400, acct.balance
+		@acct1.deposit(5000)
+		assert_equal 6400, @acct1.balance
 	end
 
 	def test_account_csv_all
-		accounts = Bank::Account.all
-		assert_equal 12, accounts.length
-		assert_equal 1214, accounts[2].id
-		assert_equal 9844567, accounts[6].balance
+		assert_equal 12, @accounts.length
+		assert_equal 1214, @accounts[2].id
+		assert_equal 9844567, @accounts[6].balance
 	end
 
 	def test_account_csv_find
@@ -52,10 +56,9 @@ class BankTest < Minitest::Test
 	end
 
 	def test_owner_csv_all
-		owners = Bank::Owner.all
-		assert_equal 12, owners.length
-		assert_equal "9 Portage Court\nWinston Salem, North Carolina", owners[2].address
-		assert_equal "18", owners[4].id
+		assert_equal 12, @owners.length
+		assert_equal "9 Portage Court\nWinston Salem, North Carolina", @owners[2].address
+		assert_equal "18", @owners[4].id
 	end
 
 	def test_owner_csv_find
@@ -90,66 +93,63 @@ class BankTest < Minitest::Test
 	end
 
 	def test_checking_account
-		checking_acct = Bank::CheckingAccount.new(1)
-		assert_equal 0, checking_acct.checks_used
+		assert_equal 0, @checking_acct.checks_used
 
-		assert_equal 0, checking_acct.withdraw(50)
+		assert_equal 0, @checking_acct.withdraw(50)
 
-		checking_acct.deposit(100)
-		assert_equal 100, checking_acct.balance
+		@checking_acct.deposit(100)
+		assert_equal 100, @checking_acct.balance
 
-		assert_equal 98, checking_acct.withdraw(1)
+		assert_equal 98, @checking_acct.withdraw(1)
 
-		assert_equal -2, checking_acct.withdraw_using_check(100)
-		assert_equal 98, checking_acct.deposit(100)
-		assert_equal 93, checking_acct.withdraw_using_check(5)
-		assert_equal 90, checking_acct.withdraw_using_check(3)
-		assert_equal 3, checking_acct.checks_used
-		assert_equal 83, checking_acct.withdraw_using_check(5)
+		assert_equal -2, @checking_acct.withdraw_using_check(100)
+		assert_equal 98, @checking_acct.deposit(100)
+		assert_equal 93, @checking_acct.withdraw_using_check(5)
+		assert_equal 90, @checking_acct.withdraw_using_check(3)
+		assert_equal 3, @checking_acct.checks_used
+		assert_equal 83, @checking_acct.withdraw_using_check(5)
 
-		checking_acct.reset_checks
+		@checking_acct.reset_checks
 
-		assert_equal 0, checking_acct.checks_used
+		assert_equal 0, @checking_acct.checks_used
 	end
 
 	def test_money_market_account
 		assert_equal ArgumentError, Bank::MoneyMarketAccount.new(1, 0) rescue ArgumentError
 
-		money_market = Bank::MoneyMarketAccount.new(1, 15000)
+		assert_equal 20000, @money_market.deposit(5000)
+		assert_equal 1, @money_market.transactions
 
-		assert_equal 20000, money_market.deposit(5000)
-		assert_equal 1, money_market.transactions
+		assert_equal 15000, @money_market.withdraw(5000)
+		assert_equal 2, @money_market.transactions
+		assert_equal true, @money_market.transactions_allowed
 
-		assert_equal 15000, money_market.withdraw(5000)
-		assert_equal 2, money_market.transactions
-		assert_equal true, money_market.transactions_allowed
+		assert_equal 8900, @money_market.withdraw(6000)
+		assert_equal 3, @money_market.transactions
+		assert_equal false, @money_market.transactions_allowed
 
-		assert_equal 8900, money_market.withdraw(6000)
-		assert_equal 3, money_market.transactions
-		assert_equal false, money_market.transactions_allowed
+		assert_equal 8900, @money_market.withdraw(100)
+		assert_equal 8900, @money_market.deposit(100)
 
-		assert_equal 8900, money_market.withdraw(100)
-		assert_equal 8900, money_market.deposit(100)
+		assert_equal 10900, @money_market.deposit(2000)
+		assert_equal true, @money_market.transactions_allowed
+		assert_equal 3, @money_market.transactions
 
-		assert_equal 10900, money_market.deposit(2000)
-		assert_equal true, money_market.transactions_allowed
-		assert_equal 3, money_market.transactions
+		assert_equal 11000, @money_market.deposit(100)
+		assert_equal 11100, @money_market.deposit(100)
+		assert_equal 11200, @money_market.deposit(100)
+		assert_equal 6, @money_market.transactions
 
-		assert_equal 11000, money_market.deposit(100)
-		assert_equal 11100, money_market.deposit(100)
-		assert_equal 11200, money_market.deposit(100)
-		assert_equal 6, money_market.transactions
+		assert_equal 11200, @money_market.deposit(100)
+		assert_equal 11200, @money_market.withdraw(100)
+		assert_equal 6, @money_market.transactions
 
-		assert_equal 11200, money_market.deposit(100)
-		assert_equal 11200, money_market.withdraw(100)
-		assert_equal 6, money_market.transactions
+		@money_market.reset_transactions
+		assert_equal 0, @money_market.transactions
 
-		money_market.reset_transactions
-		assert_equal 0, money_market.transactions
-
-		assert_equal 11300, money_market.deposit(100)
-		assert_equal 11200, money_market.withdraw(100)
-		assert_equal 2, money_market.transactions
+		assert_equal 11300, @money_market.deposit(100)
+		assert_equal 11200, @money_market.withdraw(100)
+		assert_equal 2, @money_market.transactions
 	end
 end
 
